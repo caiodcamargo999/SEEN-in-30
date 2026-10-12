@@ -1,0 +1,19 @@
+{
+  "name": "seen-in-30",
+  "version": "1.0.0",
+  "description": "High-converting sales landing page for SEEN in 30 by Isadora Melo",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve .",
+    "start": "npx -y serve .",
+    "build": "echo 'Static build ready'"
+  },
+  "keywords": [
+    "seen-in-30",
+    "isadora-melo",
+    "landing-page",
+    "sales-page"
+  ],
+  "author": "Isadora Melo",
+  "license": "UNLICENSED"
+}
