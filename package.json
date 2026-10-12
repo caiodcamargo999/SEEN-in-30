@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx -y serve .",
     "start": "npx -y serve .",
-    "build": "echo 'Static build ready'"
+    "build": "cp index.html public/ && cp -r assets public/"
   },
   "keywords": [
     "seen-in-30",
