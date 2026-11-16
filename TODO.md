@@ -4,10 +4,8 @@ Welcome, Isadora & Team! Below is the complete checklist of items and placeholde
 
 ---
 
-### 1. Meta Pixel ID (Tracking)
-- [ ] **File**: `landing/assets/app.js` (Line 18)
-- [ ] **Action**: If you are running Meta (Instagram / Facebook) ads, insert your Pixel ID into `META_PIXEL_ID: "YOUR_PIXEL_ID_HERE"`.
-- [ ] **Default**: Left blank. When blank, no Meta tracking scripts load. When added, `PageView` and `InitiateCheckout` events fire automatically.
+### 1. Tracking (UTMify)
+- [x] Pixel Meta, UTMs and InitiateCheckout come from the two UTMify scripts at the top of `<head>` (root and `/unstuckmethod`). Purchase comes from the Hotmart webhook -> UTMify -> CAPI. Do not add a direct Meta Pixel.
 
 ---
 

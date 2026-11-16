@@ -2,8 +2,7 @@
  * SEEN in 30 — Sales Landing Page JavaScript
  * Handles:
  *  1. Configuration & dynamic variable insertion
- *  2. Seamless UTM parameter forwarding to Checkout URL
- *  3. Meta Pixel injection & InitiateCheckout event tracking (conditional)
+ *  2. (UTMs, Meta Pixel and InitiateCheckout are handled by the UTMify scripts in <head>)
  *  4. Sticky mobile bottom CTA observer
  *  5. Legal placeholder modals
  */
@@ -16,8 +15,6 @@ const CONFIG = {
   PRODUCT_NAME: "SEEN in 30",
   PRICE: "$12",
   OLD_PRICE: "$27",
-  CHECKOUT_URL: "https://stan.store/isadoramelo/p/unstuck-method",
-  META_PIXEL_ID: "", // Add Meta Pixel ID here (e.g. "987654321012345") when ready. Empty by default.
   ISADORA_FOLLOWER_COUNT: "", // e.g., "50K+" — If left empty, the badge cleanly hides automatically.
   LEGAL_LINKS: {
     privacy: "modal-privacy",
@@ -25,70 +22,6 @@ const CONFIG = {
     refund: "modal-refund"
   }
 };
-
-// ==========================================================================
-// 2. UTM PARAMETER FORWARDING
-// Preserves any incoming UTM and campaign tags and appends to checkout URL.
-// ==========================================================================
-function getCheckoutUrlWithParams() {
-  try {
-    const checkoutUrl = new URL(CONFIG.CHECKOUT_URL);
-    const currentParams = new URLSearchParams(window.location.search);
-
-    // Forward all current URL parameters to the checkout URL
-    currentParams.forEach((value, key) => {
-      checkoutUrl.searchParams.set(key, value);
-    });
-
-    return checkoutUrl.toString();
-  } catch (err) {
-    console.error("Error constructing checkout URL:", err);
-    return CONFIG.CHECKOUT_URL;
-  }
-}
-
-function updateAllCheckoutButtons() {
-  const finalUrl = getCheckoutUrlWithParams();
-  const ctaLinks = document.querySelectorAll('a[data-role="checkout-cta"]');
-  ctaLinks.forEach(link => {
-    link.href = finalUrl;
-  });
-}
-
-// ==========================================================================
-// 3. META PIXEL INJECTION & TRACKING (CONDITIONAL)
-// Loads ONLY if META_PIXEL_ID is configured. No external calls if empty.
-// ==========================================================================
-function initMetaPixel() {
-  if (!CONFIG.META_PIXEL_ID || CONFIG.META_PIXEL_ID.trim() === "") {
-    // Pixel is not configured yet. No script loaded.
-    return;
-  }
-
-  /* eslint-disable */
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  /* eslint-enable */
-
-  fbq('init', CONFIG.META_PIXEL_ID.trim());
-  fbq('track', 'PageView');
-}
-
-function trackInitiateCheckout() {
-  if (window.fbq && CONFIG.META_PIXEL_ID && CONFIG.META_PIXEL_ID.trim() !== "") {
-    fbq('track', 'InitiateCheckout', {
-      content_name: CONFIG.PRODUCT_NAME,
-      value: 12,
-      currency: 'USD'
-    });
-  }
-}
 
 // ==========================================================================
 // 4. DYNAMIC TOKEN RENDERING
@@ -203,15 +136,7 @@ function initModals() {
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
   renderConfigTokens();
-  updateAllCheckoutButtons();
-  initMetaPixel();
   initStickyMobileCta();
   initModals();
 
-  // Attach tracking event to all checkout CTAs
-  document.querySelectorAll('a[data-role="checkout-cta"]').forEach(button => {
-    button.addEventListener("click", () => {
-      trackInitiateCheckout();
-    });
-  });
 });
